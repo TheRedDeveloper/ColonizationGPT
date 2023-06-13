@@ -11,10 +11,12 @@ public class PlayerInputHandler : MonoBehaviour
 	public GameCamera gameCamera;
 	public UIManager uIManager;
 	public SolarSystem.SolarSystemManager solarSystemManager;
+	public GlobeController globalMapController;
+	public GameObject mapCanvas;
 	PlayerAction playerActions;
 
 
-	void Start()
+	/*void Start()
 	{
 		playerActions = RebindManager.Instance.activePlayerActions;
 
@@ -87,8 +89,27 @@ public class PlayerInputHandler : MonoBehaviour
 
 		if (playerActions.UIControls.ToggleMap.WasPressedThisFrame())
 		{
-			uIManager.ToggleMap();
+			toggleView();
+		}
+	}*/
+
+	public void toggleView(){
+		if (globalMapController.camDst == -55){
+			globalMapController.camDst = -332;
+			mapCanvas.SetActive(false);
+		} else {
+			globalMapController.camDst = -55;
+			mapCanvas.SetActive(true);
 		}
 	}
 
+	public void setView(bool state){
+		if (state){
+			globalMapController.camDst = -332;
+			mapCanvas.SetActive(false);
+		} else {
+			globalMapController.camDst = -55;
+			mapCanvas.SetActive(true);
+		}
+	}
 }

@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using Newtonsoft.Json;
 
 public enum GameState
 {
@@ -21,6 +24,10 @@ public class GameController : MonoBehaviour
 	[SerializeField] bool allowDevModeToggleInBuild;
 	[SerializeField] MainMenu mainMenu;
 	[SerializeField] Menu statsMenu;
+	[SerializeField] UIManager uiManager;
+	[SerializeField] GraphicRaycaster raycaster;
+	[SerializeField] EventSystem eventSystem;
+	[SerializeField] PlayerInputHandler inputHandler;
 
 	[Header("Debug")]
 	[SerializeField] GameState debug_currentState;
@@ -48,6 +55,7 @@ public class GameController : MonoBehaviour
 		{
 			StartGame();
 		}
+		uiManager.ToggleMap();
 	}
 
 	void Update()
@@ -59,6 +67,9 @@ public class GameController : MonoBehaviour
 
 		debug_currentState = stateStack.Peek();
 
+		List<RaycastResult> m_RaycastResults = new List<RaycastResult>{};
+		raycaster.Raycast(new PointerEventData(eventSystem){position = Input.mousePosition}, m_RaycastResults);
+		inputHandler.setView(m_RaycastResults.Count != 0);
 	}
 
 	public static void GameOver()

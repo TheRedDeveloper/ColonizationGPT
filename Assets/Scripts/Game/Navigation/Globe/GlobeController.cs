@@ -18,11 +18,13 @@ public class GlobeController : MonoBehaviour
 	public TMPro.TMP_Text countryNameDisplay;
 	public Vector2 zoomMinMax;
 	public float cursorHighlightRadius;
+	public GameObject selectedCountry;
 
 	[Header("References")]
 	public Transform globe;
 	public GlobeMapLoader mapLoader;
 	public UnityEngine.UI.CanvasScaler canvasScaler;
+	public ChatGPT chatgpt;
 
 	// Private stuff
 	float angleX;
@@ -93,6 +95,8 @@ public class GlobeController : MonoBehaviour
 			if (!Input.GetMouseButton(0))
 			{
 				HandleSelection();
+			} else {
+				HandleClick();
 			}
 			UpdateRotation();
 
@@ -143,6 +147,10 @@ public class GlobeController : MonoBehaviour
 		cam.transform.LookAt(Vector3.zero);
 	}
 
+	void HandleClick(){
+		if(lastHighlightedCountry != null && camDst == -55) selectedCountry = lastHighlightedCountry;
+	}
+
 	void HandleSelection()
 	{
 		Ray ray = cam.ScreenPointToRay(Input.mousePosition);
@@ -171,7 +179,7 @@ public class GlobeController : MonoBehaviour
 			}
 			else
 			{
-				lastHighlightedCountry = null;
+				if(lastHighlightedCountry != null) lastHighlightedCountry = null;
 			}
 		}
 	}
@@ -250,6 +258,19 @@ public class GlobeController : MonoBehaviour
 			countryNameDisplay.color = new Color(1, 1, 1, textAlpha);
 			countryNameDisplay.text = overridenText;
 		}
+
+		short indx = 0;
+		Color[] empireColors = new Color[]{new Color(1, .1f, .1f, 1), new Color(0, .1f, 1, 1), new Color(0, 1, 0, 1), new Color(.9f, .8f, 0, 1)};
+		foreach(ChatGPT.Empire empire in chatgpt.empires){
+			Color empireColor = empireColors[indx++];
+			foreach (string country in empire.countries){
+				foreach(Seb.Meshing.RenderObject obj in mapLoader.countryObjects){
+					if(obj.renderer.gameObject.name.Contains(country)) obj.renderer.sharedMaterial.color = empireColor;
+				}
+			}
+		}
+
+		if(selectedCountry.name != "space") countryMaterials[countryIndexLookup[selectedCountry]].color = new Color(.8f, .3f, .6f, 1);
 	}
 
 	public void Open()

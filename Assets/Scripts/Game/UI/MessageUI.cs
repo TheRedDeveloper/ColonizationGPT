@@ -14,7 +14,7 @@ public class MessageUI : MonoBehaviour
 
 	Message activeMessage;
 
-	public void ShowMessage(string messageText, float duration)
+	public void ShowMessage(string messageText, float? duration)
 	{
 		// Deactivate previous active message
 		if (activeMessage != null)
@@ -55,7 +55,7 @@ public class MessageUI : MonoBehaviour
 
 		// Wait
 		t = 0;
-		while (t < message.visibleDuration)
+		while (t < message.visibleDuration || message.visibleDuration == null)
 		{
 			t += Time.deltaTime;
 			if (!message.active)
@@ -114,6 +114,6 @@ public class MessageUI : MonoBehaviour
 	{
 		public TMP_Text text;
 		public bool active;
-		public float visibleDuration;
+		public float? visibleDuration;
 	}
 }

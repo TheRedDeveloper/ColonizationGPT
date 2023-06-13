@@ -33,8 +33,8 @@ MonoBehaviour:
   ozoneStrength: 0.4
   ozoneAbsorption: {x: -3, y: 3.12, z: 0.02}
   sunDiscSize: 1.15
-  sunDiscBlurA: 32.95
-  sunDiscBlurB: 3.1
+  sunDiscBlurA: 34.68
+  sunDiscBlurB: -2.8
   transmittanceLUTCompute: {fileID: 7200000, guid: cca6f912a2bba8340ba53132e1b235a1, type: 3}
   transmittanceLUTSize: {x: 128, y: 64}
   aerialPerspectiveLUTCompute: {fileID: 7200000, guid: 5261cb094de7cb64189738546d046b7d, type: 3}

@@ -50,6 +50,10 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
+	public void SetMapDisplay(bool state){
+		while(GameController.IsAnyState(GameState.ViewingMap) != state){ ToggleMapDisplay(); };
+	}
+
 
 	public void ToggleMapDisplay()
 	{
