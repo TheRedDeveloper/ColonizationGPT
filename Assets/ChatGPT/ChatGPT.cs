@@ -12,15 +12,17 @@ using Febucci.UI;
 
 public class ChatGPT : MonoBehaviour
 {
-    public string GPTSERVICE = "http://192.168.0.137:1337/";
+    public string GPTSERVICE = "https://freegpt-vuur.onrender.com/";
 
     string conversation;
     public static Deserializer deserializer = new YamlDotNet.Serialization.Deserializer();
-	  public static Dictionary<string, string> ResourceSheet = deserializer.Deserialize<Dictionary<string, string>>(@"
-    Germany: beer
-    Italy: pizza
-    Antarctica: ice
-    Japan: anime");
+	  public static Dictionary<string, string> ResourceSheet = new Dictionary<string, string>(){
+      {"Germany", "beer"},
+      {"Italy", "pizza"},
+      {"Japan", "anime"},
+      {"Antarctica", "ice"}
+    };
+
     public List<Empire> empires;
     public Empire currentPlayer;
     public Parameters game;
@@ -223,10 +225,6 @@ nextPlayer: Carlostan
 
     void initGame()
     {
-        var deserializer = new YamlDotNet.Serialization.Deserializer();
-        var RessourceSheet = deserializer.Deserialize<Dictionary<string, string>>(@"
-        Germany: beer
-        Italy: pizza");
         string parameters = "empires:\n";
         foreach (Empire empire in empires) {
             parameters += "- "+empire.name+"\n";
