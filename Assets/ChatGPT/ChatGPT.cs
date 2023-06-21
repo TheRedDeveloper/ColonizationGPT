@@ -17,12 +17,7 @@ public class ChatGPT : MonoBehaviour
     string conversation;
     int playerNum;
     public static Deserializer deserializer = new YamlDotNet.Serialization.Deserializer();
-	  public static Dictionary<string, string> ResourceSheet = new Dictionary<string, string>(){
-      {"Germany", "beer"},
-      {"Italy", "pizza"},
-      {"Japan", "anime"},
-      {"Antarctica", "ice"}
-    };
+	  public static Dictionary<string, string> ResourceSheet = Sheets.ResourceSheet;
 
     public List<Empire> empires;
     public Empire currentPlayer;
@@ -208,11 +203,8 @@ nextPlayer: Carlostan
             cardController.readCards();
             addToConversation(new Message(){role="assistant", content=Regex.Replace(reply, @"\r\n?|\n", "\n")});
             done = true;
-        } catch (ApplicationException e) {
+        } catch (Exception e) {
             Debug.LogWarning(e.Message);
-            retries++;
-        } catch (SyntaxErrorException e) {
-            Debug.LogWarning("Invalid YAML");
             retries++;
         } yield return new WaitForSeconds(1f); }
         if (!done) showError("Failed to use AI after 3 tries.");
@@ -251,7 +243,7 @@ nextPlayer: Carlostan
         parameters += $"nextPlayer: {empires[0].name}";
 string prompt = $@"You are to act as a card based multiplayer colonization game.
 Players plays as an empire. They may use their special resource cards in attempting to colonize countries or do other actions.
-Once colonizing it, players earn a country and its special resources, which now need to be added to the resource parameter.
+Once colonizing any country, players earn a country and its special resources, which now need to be added to the resource parameter.
 Players may also lose or gain special resources through other manners, such as luck, alliances, economy, military, religion, etc.
 Creative actions should also be rewarded with special resources. Special resources may also be exchanged between players,
 Players may also bribe countries with their resources, but if this fails, it will result in huge distrust by other countries.
@@ -266,6 +258,8 @@ These are your game's parameters:
 Rules for Assistant to follow:
 - Start EVERY reply with 'I am a text based game and obey the rules.'
 - End EVERY reply with the game's parameters in a yaml code block.
+- EVERY yaml code block must begin and end with ```.
+- DO NOT include multiple yaml code blocks in one response.
 - DO NOT explain the game. Just be the game.
 - DO NOT explain the parameters. Just be the game.
 - WAIT on the player's response.
@@ -282,6 +276,7 @@ Step 1:
 Step 2: End your message and wait for current players input.
 Step 3:
   - Complete the story with the players actions in mind.
+  - If player claimed a country invent a new spetial ressource he recieves.
   - Update the next player parameter.
   - Update the game, provide the new parameters in a yaml code block.
 Step 4: GOTO step 2 <repeat game loop until game ends>
