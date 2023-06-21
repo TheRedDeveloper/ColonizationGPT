@@ -15,6 +15,7 @@ public class ChatGPT : MonoBehaviour
     public string GPTSERVICE = "https://freegpt-vuur.onrender.com/";
 
     string conversation;
+    int playerNum;
     public static Deserializer deserializer = new YamlDotNet.Serialization.Deserializer();
 	  public static Dictionary<string, string> ResourceSheet = new Dictionary<string, string>(){
       {"Germany", "beer"},
@@ -35,6 +36,9 @@ public class ChatGPT : MonoBehaviour
     public CardController cardController;
     public GlobeController globeController;
     public TMPro.TMP_Text toText;
+    public TMPro.TMP_Text nameText;
+    public GameObject playerEditor;
+    public GameObject space;
 
     public class Empire {
         public string name { get; set; }
@@ -217,10 +221,11 @@ nextPlayer: Carlostan
     }
 
     void Start()
-	{
+	  {
         Debug.Log("Initialising.");
-        empires = new List<Empire>(new Empire[]{new Empire{name="Johannestan", country="Germany"}, new Empire{name="Carlostan", country="Italy"}/*, new Empire{name="Fabistan", country="Japan"}*/});
-        initGame();
+        empires = new List<Empire>(new Empire[]{});
+        // empires = new List<Empire>(new Empire[]{new Empire{name="Johannestan", country="Germany"}, new Empire{name="Carlostan", country="Italy"}/*, new Empire{name="Fabistan", country="Japan"}*/});
+        // initGame();
     }
 
     void initGame()
@@ -292,6 +297,20 @@ Start at step 0. Initiate being a text based game, pausing at step 2.";
 
     public void submit(){
         submitAction($"{currentPlayer.name} wants to use {cardController.selcted} in {globeController.selectedCountry.name} to {toText.text}");
+    }
+
+    public void setPlayerNum(int num){
+      playerNum = num;
+    }
+
+    public void submitPlayer() {
+      empires.Add(new Empire{name=nameText.text, country=globeController.selectedCountry.name});
+      nameText.text = "";
+      globeController.selectedCountry = space;
+      if(empires.Count >= playerNum){
+        playerEditor.SetActive(false);
+        initGame();
+      }
     }
 
     void submitAction(string action){

@@ -195,7 +195,9 @@ public static class ComputeHelper
 	public static RenderTexture CreateRenderTexture(int width, int height, FilterMode filterMode, GraphicsFormat format, string name = "Unnamed", DepthMode depthMode = DepthMode.None, bool useMipMaps = false)
 	{
 		RenderTexture texture = new RenderTexture(width, height, (int)depthMode);
-		texture.graphicsFormat = format;
+		GraphicsFormat compatFormat = SystemInfo.GetCompatibleFormat(format, FormatUsage.LoadStore);
+		if(compatFormat == GraphicsFormat.None || compatFormat == null) return texture;
+		texture.graphicsFormat = compatFormat;
 		texture.enableRandomWrite = true;
 		texture.autoGenerateMips = false;
 		texture.useMipMap = useMipMaps;
@@ -262,7 +264,9 @@ public static class ComputeHelper
 			}
 			const int numBitsInDepthBuffer = 0;
 			texture = new RenderTexture(size, size, numBitsInDepthBuffer);
-			texture.graphicsFormat = format;
+			GraphicsFormat compatFormat = SystemInfo.GetCompatibleFormat(format, FormatUsage.LoadStore);
+			if(compatFormat == GraphicsFormat.None || compatFormat == null) return;
+			texture.graphicsFormat = compatFormat;
 			texture.volumeDepth = size;
 			texture.enableRandomWrite = true;
 			texture.dimension = UnityEngine.Rendering.TextureDimension.Tex3D;
